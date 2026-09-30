@@ -230,7 +230,9 @@ private fun Display(state: CalculatorState, sizes: DisplaySizes, onCopy: () -> U
     val haptics = LocalHapticFeedback.current
     val currentOnCopy by rememberUpdatedState(onCopy)
     val copyLabel = stringResource(R.string.copy_action)
-    val expression = expressionText(state, operationSymbol(state.operation))
+    // На дисплее минус — обычный дефис, как в отрицательных числах; на кнопке остаётся «−»
+    val symbol = if (state.operation == Operation.MINUS) "-" else operationSymbol(state.operation)
+    val expression = expressionText(state, symbol)
 
     Column(
         modifier = modifier
