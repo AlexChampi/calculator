@@ -79,14 +79,12 @@ data class CalculatorState(
 
     fun clear(): CalculatorState = CalculatorState()
 
-    fun clearEntry(): CalculatorState = copy(entry = ZERO, startNew = true)
-
     private fun startTyping(): CalculatorState = when {
         startNew -> copy(entry = ZERO, startNew = false)
         else -> this
     }
 
-    // Минус в начале числа (сразу после запуска, CE или знака операции) делает число отрицательным
+    // Минус в начале числа (сразу после запуска или знака операции) делает число отрицательным
     private fun startsNegativeNumber(): Boolean =
         signOnly || (startNew && (operation != Operation.NONE || entry == ZERO))
 

@@ -46,20 +46,6 @@ class CalculatorTest {
     }
 
     @Test
-    fun clearEntryKeepsOperation() {
-        val state = calc("9-4").clearEntry().type("1=")
-        assertEquals("8", state.entry)
-    }
-
-    @Test
-    fun clearEntryRemovesRightOperandFromExpression() {
-        val state = calc("12+34").clearEntry()
-        assertTrue(state.startNew)
-        assertEquals(Operation.PLUS, state.operation)
-        assertEquals("17", state.type("5=").entry)
-    }
-
-    @Test
     fun negativeNumberAtStart() {
         assertEquals("-5", calc("-5").entry)
         assertEquals("-2", calc("-5+3=").entry)

@@ -83,7 +83,6 @@ private class KeypadActions(
     val onOperation: (Operation) -> Unit,
     val onEquals: () -> Unit,
     val onClear: () -> Unit,
-    val onClearEntry: () -> Unit,
     val onCopy: () -> Unit,
 )
 
@@ -94,7 +93,6 @@ private data class KeySizes(
     val rowGap: Dp,
     val digit: TextUnit,
     val operation: TextUnit,
-    val clearEntry: TextUnit,
     val equals: TextUnit,
     val icon: Dp,
 )
@@ -129,7 +127,6 @@ fun CalculatorScreen() {
         onOperation = { state = state.inputOperation(it) },
         onEquals = { state = state.equals() },
         onClear = { state = state.clear() },
-        onClearEntry = { state = state.clearEntry() },
         onCopy = copy,
     )
 
@@ -166,7 +163,6 @@ private fun PortraitLayout(state: CalculatorState, actions: KeypadActions, width
         rowGap = rowGap,
         digit = (32 * scale).sp,
         operation = (36 * scale).sp,
-        clearEntry = (28 * scale).sp,
         equals = (40 * scale).sp,
         icon = 30.dp * scale,
     )
@@ -201,7 +197,6 @@ private fun LandscapeLayout(state: CalculatorState, actions: KeypadActions, widt
         rowGap = rowGap,
         digit = 24.sp,
         operation = 28.sp,
-        clearEntry = 22.sp,
         equals = 30.sp,
         icon = 24.dp,
     )
@@ -277,8 +272,7 @@ private fun Keypad(state: CalculatorState, actions: KeypadActions, sizes: KeySiz
     val rowArrangement = Arrangement.spacedBy(sizes.columnGap)
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(sizes.rowGap)) {
         Row(horizontalArrangement = rowArrangement) {
-            GlyphKey(R.string.key_clear, R.string.cd_clear, LeafColors.Clear, sizes.digit, sizes, actions.onClear)
-            GlyphKey(R.string.key_clear_entry, R.string.cd_clear_entry, LeafColors.Clear, sizes.clearEntry, sizes, actions.onClearEntry)
+            WideKey(stringResource(R.string.key_clear), LeafColors.Clear, sizes, actions.onClear, stringResource(R.string.cd_clear))
             CopyKey(enabled = state.result.isNotEmpty(), sizes = sizes, onClick = actions.onCopy)
             OperationKey(Operation.DIVIDE, sizes, actions)
         }
@@ -286,16 +280,7 @@ private fun Keypad(state: CalculatorState, actions: KeypadActions, sizes: KeySiz
         DigitRow(4, Operation.MINUS, sizes, actions)
         DigitRow(1, Operation.PLUS, sizes, actions)
         Row(horizontalArrangement = rowArrangement) {
-            Key(
-                onClick = { actions.onDigit(0) },
-                width = sizes.width * 2 + sizes.columnGap,
-                height = sizes.height,
-                contentAlignment = Alignment.CenterStart,
-            ) {
-                Box(Modifier.width(sizes.width), contentAlignment = Alignment.Center) {
-                    KeyGlyph("0", LeafColors.OnKey, sizes.digit)
-                }
-            }
+            WideKey("0", LeafColors.OnKey, sizes, { actions.onDigit(0) })
             GlyphKey(R.string.key_dot, R.string.cd_dot, LeafColors.OnKey, sizes.digit, sizes, actions.onDot)
             Key(
                 onClick = actions.onEquals,
@@ -306,6 +291,22 @@ private fun Keypad(state: CalculatorState, actions: KeypadActions, sizes: KeySiz
             ) {
                 KeyGlyph(stringResource(R.string.key_equals), LeafColors.OnEquals, sizes.equals)
             }
+        }
+    }
+}
+
+// Кнопка на две колонки; подпись стоит над первой колонкой, как у обычной кнопки
+@Composable
+private fun WideKey(text: String, color: Color, sizes: KeySizes, onClick: () -> Unit, description: String = "") {
+    Key(
+        onClick = onClick,
+        width = sizes.width * 2 + sizes.columnGap,
+        height = sizes.height,
+        description = description,
+        contentAlignment = Alignment.CenterStart,
+    ) {
+        Box(Modifier.width(sizes.width), contentAlignment = Alignment.Center) {
+            KeyGlyph(text, color, sizes.digit)
         }
     }
 }
