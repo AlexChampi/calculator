@@ -62,6 +62,42 @@ class CalculatorTest {
     }
 
     @Test
+    fun clearEntryRemovesRightOperandFromExpression() {
+        val state = calc("12+34").clearEntry()
+        assertTrue(state.startNew)
+        assertEquals(Operation.PLUS, state.operation)
+        assertEquals("17", state.type("5=").entry)
+    }
+
+    @Test
+    fun negativeNumberAtStart() {
+        assertEquals("-5", calc("-5").entry)
+        assertEquals("-2", calc("-5+3=").entry)
+        assertEquals("-0.5", calc("-.5").entry)
+    }
+
+    @Test
+    fun negativeNumberAfterOperation() {
+        assertEquals("-15", calc("5*-3=").entry)
+        assertEquals("8", calc("5--3=").entry)
+        assertEquals("-2", calc("6/-3=").entry)
+    }
+
+    @Test
+    fun minusAfterResultSubtracts() {
+        assertEquals("2", calc("2+3=-3=").entry)
+    }
+
+    @Test
+    fun zeroDividedByZeroIsNaN() {
+        val state = calc("0/0=")
+        assertFalse(state.hasError)
+        assertEquals("NaN", state.entry)
+        assertEquals("NaN", state.result)
+        assertEquals("NaN", calc("0/0=+1=").entry)
+    }
+
+    @Test
     fun clearEntryAfterErrorClearsAll() {
         val state = calc("5/0=").clearEntry()
         assertFalse(state.hasError)
