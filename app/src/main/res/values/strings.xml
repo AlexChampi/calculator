@@ -3,8 +3,6 @@
     <string name="app_name">Calculator</string>
     <string name="copied">Copied to clipboard</string>
     <string name="copy_action">Copy result</string>
-    <string name="error_division_by_zero">Can’t divide by 0</string>
-    <string name="error_overflow">Result is too large</string>
 
     <string name="key_clear">C</string>
     <string name="key_clear_entry">CE</string>

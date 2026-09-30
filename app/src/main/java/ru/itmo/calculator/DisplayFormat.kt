@@ -2,7 +2,6 @@ package ru.itmo.calculator
 
 private const val GROUP_SIZE = 3
 private const val GROUP_SEPARATOR = ","
-private const val MINUS_SIGN = "−"
 
 fun groupDigits(number: String): String {
     val negative = number.startsWith('-')
@@ -13,5 +12,5 @@ fun groupDigits(number: String): String {
         .chunked(GROUP_SIZE)
         .joinToString(GROUP_SEPARATOR)
         .reversed()
-    return (if (negative) MINUS_SIGN else "") + grouped + body.substring(integerEnd)
+    return (if (negative) "-" else "") + grouped + body.substring(integerEnd)
 }

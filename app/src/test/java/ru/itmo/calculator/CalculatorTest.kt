@@ -1,7 +1,6 @@
 package ru.itmo.calculator
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -33,26 +32,17 @@ class CalculatorTest {
     }
 
     @Test
-    fun divisionByZeroIsErrorNotCrash() {
-        val state = calc("5/0=")
-        assertEquals(CalcError.DIVISION_BY_ZERO, state.error)
-        assertEquals("", state.result)
-        assertEquals("7", state.inputDigit(7).entry)
+    fun divisionByZeroIsInfinity() {
+        assertEquals("Infinity", calc("1/0=").entry)
+        assertEquals("-Infinity", calc("-1/0=").entry)
+        assertEquals("7", calc("5/0=").inputDigit(7).entry)
     }
 
     @Test
-    fun divisionByZeroKeepsExpressionOnScreen() {
-        val state = calc("12/0=")
-        assertEquals(12.0, state.accumulator, 0.0)
-        assertEquals(Operation.DIVIDE, state.operation)
-        assertEquals("0", state.entry)
-    }
-
-    @Test
-    fun overflowIsError() {
+    fun overflowIsInfinity() {
         var state = calc("999999999999999")
-        while (!state.hasError) state = state.type("*999999999999999=")
-        assertEquals(CalcError.OVERFLOW, state.error)
+        while (state.entry != "Infinity") state = state.type("*999999999999999=")
+        assertEquals(Double.POSITIVE_INFINITY, state.entry.toDouble(), 0.0)
     }
 
     @Test
@@ -91,17 +81,9 @@ class CalculatorTest {
     @Test
     fun zeroDividedByZeroIsNaN() {
         val state = calc("0/0=")
-        assertFalse(state.hasError)
         assertEquals("NaN", state.entry)
         assertEquals("NaN", state.result)
         assertEquals("NaN", calc("0/0=+1=").entry)
-    }
-
-    @Test
-    fun clearEntryAfterErrorClearsAll() {
-        val state = calc("5/0=").clearEntry()
-        assertFalse(state.hasError)
-        assertEquals(CalculatorState(), state)
     }
 
     @Test
@@ -150,7 +132,7 @@ class CalculatorTest {
     fun groupsDigitsForDisplay() {
         assertEquals("89,552", groupDigits("89552"))
         assertEquals("1,234.50", groupDigits("1234.50"))
-        assertEquals("−1,000", groupDigits("-1000"))
+        assertEquals("-1,000", groupDigits("-1000"))
         assertEquals("999", groupDigits("999"))
         assertEquals("1.5E+20", groupDigits("1.5E+20"))
     }

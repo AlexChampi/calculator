@@ -66,14 +66,13 @@ import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 
 private val CalculatorStateSaver = listSaver<CalculatorState, Any>(
-    save = { listOf(it.entry, it.accumulator, it.operation.name, it.startNew, it.error.name) },
+    save = { listOf(it.entry, it.accumulator, it.operation.name, it.startNew) },
     restore = {
         CalculatorState(
             entry = it[0] as String,
             accumulator = it[1] as Double,
             operation = Operation.valueOf(it[2] as String),
             startNew = it[3] as Boolean,
-            error = CalcError.valueOf(it[4] as String),
         )
     },
 )
@@ -112,7 +111,6 @@ const val RESULT_TAG = "result"
 private const val COLUMNS = 4
 private const val ROWS = 5
 private val MinTextSize = 16.sp
-private val ErrorTextSize = 20.sp
 
 @Composable
 fun CalculatorScreen() {
@@ -261,25 +259,14 @@ private fun Display(state: CalculatorState, sizes: DisplaySizes, onCopy: () -> U
             overflow = TextOverflow.StartEllipsis,
             autoSize = TextAutoSize.StepBased(minFontSize = MinTextSize, maxFontSize = sizes.expressionMax),
         )
-        if (state.hasError) {
-            Text(
-                text = stringResource(errorMessage(state.error)),
-                modifier = Modifier.fillMaxWidth(),
-                color = LeafColors.Clear,
-                fontSize = ErrorTextSize,
-                textAlign = TextAlign.End,
-                maxLines = 1,
-            )
-        } else {
-            BasicText(
-                text = groupDigits(state.preview),
-                modifier = Modifier.fillMaxWidth(),
-                style = numberStyle(LeafColors.Preview),
-                maxLines = 1,
-                softWrap = false,
-                autoSize = TextAutoSize.StepBased(minFontSize = MinTextSize, maxFontSize = sizes.preview),
-            )
-        }
+        BasicText(
+            text = groupDigits(state.preview),
+            modifier = Modifier.fillMaxWidth(),
+            style = numberStyle(LeafColors.Preview),
+            maxLines = 1,
+            softWrap = false,
+            autoSize = TextAutoSize.StepBased(minFontSize = MinTextSize, maxFontSize = sizes.preview),
+        )
     }
 }
 
@@ -435,12 +422,6 @@ private fun operationDescription(operation: Operation): Int = when (operation) {
     Operation.MINUS -> R.string.cd_minus
     Operation.MULTIPLY -> R.string.cd_multiply
     Operation.DIVIDE, Operation.NONE -> R.string.cd_divide
-}
-
-@StringRes
-private fun errorMessage(error: CalcError): Int = when (error) {
-    CalcError.OVERFLOW -> R.string.error_overflow
-    CalcError.DIVISION_BY_ZERO, CalcError.NONE -> R.string.error_division_by_zero
 }
 
 private fun copyToClipboard(context: Context, label: String, text: String, copiedMessage: String) {
