@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Calculator</string>
+    <string name="copied">Copied to clipboard</string>
+    <string name="copy_action">Copy result</string>
+    <string name="error_division_by_zero">Can’t divide by 0</string>
+    <string name="error_overflow">Result is too large</string>
+
+    <string name="key_clear">C</string>
+    <string name="key_clear_entry">CE</string>
+    <string name="key_dot">.</string>
+    <string name="key_equals">=</string>
+    <string name="op_plus">+</string>
+    <string name="op_minus">−</string>
+    <string name="op_multiply">×</string>
+    <string name="op_divide">÷</string>
+
+    <string name="cd_clear">Clear all</string>
+    <string name="cd_clear_entry">Clear entry</string>
+    <string name="cd_copy">Copy result</string>
+    <string name="cd_dot">Decimal point</string>
+    <string name="cd_equals">Equals</string>
+    <string name="cd_plus">Add</string>
+    <string name="cd_minus">Subtract</string>
+    <string name="cd_multiply">Multiply</string>
+    <string name="cd_divide">Divide</string>
+</resources>
